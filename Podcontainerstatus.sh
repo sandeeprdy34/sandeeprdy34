@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Usage: ./pod-ready.sh -n <namespace>
+# Usage: ./pod-status.sh -n <namespace>
 while getopts "n:" opt; do
   case $opt in
     n) NS=$OPTARG ;;
