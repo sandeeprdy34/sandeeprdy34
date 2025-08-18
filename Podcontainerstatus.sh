@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Usage: ./pod-status.sh -n <namespace>
+# Usage: ./pod-ready.sh -n <namespace>
 while getopts "n:" opt; do
   case $opt in
     n) NS=$OPTARG ;;
@@ -15,20 +15,10 @@ fi
 
 kubectl get pods -n "$NS" -o json \
 | jq -r '
-"POD\tTYPE\tCONTAINER\tREADY",
+"POD\tCONTAINER\tREADY",
 (.items[] as $p
  | ($p.metadata.name) as $pod
  | ($p.status.containerStatuses // [])[]
- | [$pod, "app", .name, (if .ready then "Ready" else "NotReady" end)]
- | @tsv),
-(.items[] as $p
- | ($p.metadata.name) as $pod
- | ($p.status.initContainerStatuses // [])[]
- | [$pod, "init", .name, "N/A"]
- | @tsv),
-(.items[] as $p
- | ($p.metadata.name) as $pod
- | ($p.status.ephemeralContainerStatuses // [])[]
- | [$pod, "ephemeral", .name, "N/A"]
+ | [$pod, .name, (if .ready then "Ready" else "NotReady" end)]
  | @tsv)
 ' | column -t
