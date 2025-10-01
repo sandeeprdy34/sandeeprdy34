@@ -1,0 +1,2 @@
+grep -R "overcommit_memory" /etc/tuned/$(tuned-adm active | awk '{print $NF}')/ \
+    /usr/lib/tuned/$(tuned-adm active | awk '{print $NF}')/
